@@ -1,8 +1,9 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+#include <iostream>
+
 #include <cstdlib> 
-#include "hitbox.h"
 
 class Enemy {
 private:
@@ -14,17 +15,21 @@ public:
     float width;
     float height;
     int hp;
-    Hitbox box;
     virtual ~Enemy() {}
     virtual void draw() = 0;
     virtual void update() = 0;
     virtual int incScore() = 0;
-    Hitbox getHitBox(){
-        return box;
-    }
     void reduceHp(){
         hp = hp -1;
     }
+
+    bool isHit(float x,float y) {
+        if(x>=pointX && x <= pointX+width && pointY >= y){
+            return true;
+        }
+        return false;
+    }
+
     int getHp(){
         return hp;
     }
@@ -58,7 +63,6 @@ public:
             this->width = width;
             this->height = height;
             hp = 1;
-            box = Hitbox(x,y,width,height);
     }
     ~smallEnemy(){
         std::cout << "small enemy destory" << std::endl;
@@ -73,8 +77,8 @@ public:
         glBegin(GL_QUADS);
             glVertex2f(pointX, pointY);           // bottom-left
             glVertex2f(pointX + width, pointY);  // bottom-right
-            glVertex2f(pointX+ width, pointY + width);  // top-right
-            glVertex2f(pointX, pointY + width);  // top-left
+            glVertex2f(pointX+ width, pointY + height);  // top-right
+            glVertex2f(pointX, pointY + height);  // top-left
         glEnd();
     }
     
@@ -112,7 +116,7 @@ public:
             akey();
             wkey();
         }
-        box.updateHitBox(pointX,pointY,width,height);
+        
     }
     void update(){
         int random_number = (rand() % 8)+1; //make random number 1-8
@@ -151,7 +155,6 @@ public:
             this->width = width;
             this->height = height;
             hp = 3;
-            box = Hitbox(x,y,width,height);
     }
     ~mediumEnemy(){
         std::cout << "destroy midEnemy" << std::endl;
@@ -160,14 +163,21 @@ public:
         return 3;
     }
     void draw(){
-        glColor3f(0.0f, 0.0f, 1.0f); // blue
+        
 
-        // Draw the square
-        glBegin(GL_QUADS);
-            glVertex2f(pointX, pointY);           // bottom-left
-            glVertex2f(pointX + width, pointY);  // bottom-right
-            glVertex2f(pointX + width, pointY + width);  // top-right
-            glVertex2f(pointX, pointY + width);  // top-left
+        glColor3f(0.0f, 0.0f, 1.0f);//blue
+        glBegin(GL_POLYGON);
+        glVertex3f(pointX, pointY+0.15f*hp/3, 0.0f);
+        glVertex3f(pointX+-.03f*hp/3, pointY, 0.0f);
+        glVertex3f(pointX+.03f*hp/3, pointY, 0.0f);
+        glEnd();
+        
+        glColor3f(1.0f, 0.0f, 0.0f);//red
+	    glBegin(GL_POLYGON);
+        glVertex3f(pointX+-.03f*hp/3, pointY, 0.0f);
+        glVertex3f(pointX+-.05f*hp/3, pointY+0.03f*hp/3, 0.0f);
+        glVertex3f(pointX+.05f*hp/3, pointY+0.03f*hp/3, 0.0f);
+        glVertex3f(pointX+.03f*hp/3, pointY, 0.0f);
         glEnd();
     }
     void move(int direction){
@@ -204,14 +214,13 @@ public:
             akey();
             wkey();
         }
+
     }
     void update(){
         int random_number = (rand() % 8)+1; //make random number 1-8
         move(random_number);
     }
-    //HitBox getHitBox() const;
-private:
-    
+
 };
 
 class boss : public Enemy {
@@ -222,34 +231,75 @@ public:
             this->width = width;
             this->height = height;
             hp = 10;
-            box = Hitbox(x,y,width,height);
     }
+   
     ~boss(){
        
-        std::cout << "destroy midEnemy" << std::endl;
+        std::cout << "destroy boss" << std::endl;
     
     }
     int incScore(){
         return 10;
     }
     void draw(){
-        glColor3f(0.5f, 0.5f, 0.5f); // 
+       glColor3f(1.0f, 0.0f, 0.0f);//red
+        glBegin(GL_POLYGON);
+        glVertex3f(pointX, pointY+0.30f*hp/10, 0.0f);//center
+        glVertex3f(pointX-0.1f*hp/10, pointY, 0.0f);//left
+        glVertex3f(pointX+0.1f*hp/10, pointY, 0.0f);//right
+        glEnd();
 
-        // Draw the square
-        glBegin(GL_QUADS);
-            glVertex2f(pointX, pointY);           // bottom-left
-            glVertex2f(pointX + width, pointY);  // bottom-right
-            glVertex2f(pointX + width, pointY + width);  // top-right
-            glVertex2f(pointX, pointY + width);  // top-left
+        glColor3f(1.0f, 1.0f, 1.0f);//white
+	    glBegin(GL_POLYGON);
+        glVertex3f(pointX-0.1f*hp/10, pointY, 0.0f);
+        glVertex3f(pointX-0.16f*hp/10, pointY-0.06f*hp/10, 0.0f);
+        glVertex3f(pointX+0.16f*hp/10, pointY-0.06f*hp/10, 0.0f);
+        glVertex3f(pointX+0.1f*hp/10, pointY, 0.0f);
+        glEnd();
+
+        glColor3f(2.0f, 0.5f, 1.0f);//Lilac
+        glBegin(GL_POLYGON);
+        glVertex3f(pointX-0.16f*hp/10, pointY-0.06f*hp/10, 0.0f);
+        glVertex3f(pointX-0.16f*hp/10, pointY-0.09f*hp/10, 0.0f);
+        glVertex3f(pointX+0.16f*hp/10, pointY-0.09f*hp/10, 0.0f);
+        glVertex3f(pointX+0.16f*hp/10, pointY-0.06f*hp/10, 0.0f);
+        glEnd();
+
+        glColor3f(0.6f, 0.3f, 0.0f);//Brown
+        glBegin(GL_POLYGON);
+        glVertex3f(pointX-0.05f*hp/10, pointY+-0.09f*hp/10, 0.0f);
+        glVertex3f(pointX-0.05f*hp/10, pointY+-0.13f*hp/10, 0.0f);
+        glVertex3f(pointX-0.15f*hp/10, pointY+-0.13f*hp/10, 0.0f);
+        glVertex3f(pointX-0.15f*hp/10, pointY+-0.09f*hp/10, 0.0f);
+        glEnd();
+
+        glColor3f(0.6f, 0.3f, 0.0f);//Brown
+        glBegin(GL_POLYGON);
+        glVertex3f(pointX+0.05f*hp/10, pointY+-0.09f*hp/10, 0.0f);
+        glVertex3f(pointX+0.05f*hp/10, pointY+-0.13f*hp/10, 0.0f);
+        glVertex3f(pointX+0.15f*hp/10, pointY+-0.13f*hp/10, 0.0f);
+        glVertex3f(pointX+0.15f*hp/10, pointY+-0.09f*hp/10, 0.0f);
+        glEnd();
+
+        glColor3f(1.0f, 1.0f, 0.0f);//white
+        glBegin(GL_POLYGON);
+        glVertex3f(pointX-0.10f*hp/10, pointY+-0.39f*hp/10, 0.0f);
+        glVertex3f(pointX-0.05f*hp/10, pointY+-0.13f*hp/10, 0.0f);
+        glVertex3f(pointX-0.15f*hp/10, pointY+-0.13f*hp/10, 0.0f);
+        glEnd();
+
+        glColor3f(1.0f, 1.0f, 0.0f);//white
+        glBegin(GL_POLYGON);
+        glVertex3f(pointX+0.1f*hp/10, pointY+-0.39f*hp/10, 0.0f);
+        glVertex3f(pointX+0.05f*hp/10, pointY+-0.13f*hp/10, 0.0f);
+        glVertex3f(pointX+0.15f*hp/10, pointY+-0.13f*hp/10, 0.0f);
         glEnd();
     }
     
     void update(){
 
     }
-    //HitBox getHitBox() const;
-private:
-    
+
 };
 
 #endif // ENEMY_H

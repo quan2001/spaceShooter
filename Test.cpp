@@ -1,7 +1,6 @@
 #include <GL/freeglut.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "hitbox.h"
 #include "enemy.h"
 #include "player.h"
 #include <vector>
@@ -14,7 +13,7 @@ using namespace std;
 game space;
 
 
-player shooter(0.01f,0.01f,0.04f);
+player shooter(0.0f,-.65f,0.04f);
 void countdown(int value) {
     if (space.timeRemaining> 0) {
         space.timeRemaining--;
@@ -26,7 +25,7 @@ void countdown(int value) {
     int random_numberMid = (rand() % 8)+1; //make random number 1-8
    //cout << "boss " << space.timeBoss <<endl;
     if(space.timeBoss>=20000){
-        space.addBoss(-0.03f,0.5f);
+        space.addBoss(0,0);
         space.timeBoss -= 20000;
     }
     //cout << "midEnemy: " << space.timeMid <<endl;
@@ -37,7 +36,7 @@ void countdown(int value) {
     }
     //cout << "smallEnemy: " << space.timeSmall <<endl;
     if(space.timeSmall>=2000){
-        space.addSmallEnemy(-0.9f+(0.1*random_numberSmall),-0.9f+(0.1*random_numberSmall));
+        space.addSmallEnemy(-0.9f+(0.1*random_numberSmall),+(0.1*random_numberSmallY));
         space.timeSmall -= 2000;
     }
 }
@@ -53,6 +52,7 @@ void keyboardCallback(unsigned char key, int x, int y) {
         if(key == 13){
             //shooter.enter_pressed = true;
             shooter.shoot(space.getList());
+            shooter.isLaser = true;
             //cout << "shooting" << endl;
         }
         if (key == 'f') {
@@ -88,13 +88,13 @@ void keyboardCallback(unsigned char key, int x, int y) {
 void keyboardUpCallback(unsigned char key, int x, int y) {
     // Handle the keyboard input
 
-        /*
+        
         if(key == 13){
-            shooter.enter_pressed = false;
+            shooter.isLaser = false;
             //shooter.shoot(space.getList());
             //cout << "shooting" << endl;
         }
-        */
+        
         
         if (key == 'w') {
             shooter.w_pressed = false;
@@ -149,6 +149,7 @@ void updatePlayer() {
 void render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     int len;
+    
     if(space.timeRemaining <=0){
         glColor3f(1.0, 0.0, 0.0); // Set color to red
         glRasterPos2f(-0.01f,0.01f);
@@ -174,17 +175,17 @@ void render(){
         space.updateTime();
 
         //space.printTime();
-        updatePlayer();
-        shooter.drawTriangle();
+    updatePlayer();
+    shooter.drawTriangle();
 
-        int i;
-        //cout << space.enemyList.size() << endl;
+   int i;
+   //cout << space.enemyList.size() << endl;
     
-        for(i=0;i<space.enemyList.size();i++){
-            space.enemyList[i]->draw();
-            //cout << i << endl
-            
-        }
+   for(i=0;i<space.enemyList.size();i++){
+    space.enemyList[i]->draw();
+    //cout << i << endl
+    
+   }
         glColor3f(1.0, 1.0, 1.0);
         glRasterPos2f(0.5f, -0.8f);
         char scoreStr[50];
@@ -194,9 +195,10 @@ void render(){
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, scoreStr[i]);
         }
     // cout << space.timeRemaining << endl;
-    glutSwapBuffers();
-    }
+   glutSwapBuffers();
+    
    
+    }
 }
 void idle() {
     int i;
@@ -204,7 +206,7 @@ void idle() {
     for(i = 0;i<(space.getList()).size();i++){
         space.checkIfDead(space.getList()[i]);
     }
-    space.move();
+   space.move();
     /*
     if(space.timeRemaining <=0){
         //cout << space.score << endl;

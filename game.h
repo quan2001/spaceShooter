@@ -2,7 +2,6 @@
 #define GAME_H
 #include "enemy.h"
 #include <vector>
-#include "hitbox.h"
 
 class game{
     
@@ -23,10 +22,10 @@ class game{
             enemyList.push_back(new smallEnemy(x,y,0.04f,0.04f));
         }
         void addMidEnemy(float x, float y){
-            enemyList.push_back(new mediumEnemy(x,y,0.2f,0.2f));
+            enemyList.push_back(new mediumEnemy(x,y,0.04f,0.04f));
         }
         void addBoss(float x, float y){
-            enemyList.push_back(new boss(x,y,0.4f,0.4f));
+            enemyList.push_back(new boss(x,y,0.04f,0.4f));
         }
         // game screen is -1 to 1 on x direction
         void gameStart(){
@@ -64,7 +63,7 @@ class game{
         }
         
         void checkIfDead(Enemy* enemyPtr ){
-            if(enemyPtr->getHp() == 0){
+            if(enemyPtr->getHp() <= 0){
                 score = score + enemyPtr->incScore();
                 enemyList.erase(std::remove(enemyList.begin(), enemyList.end(), enemyPtr), enemyList.end());
                 delete enemyPtr;

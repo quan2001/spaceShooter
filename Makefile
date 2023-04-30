@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++11 -Wall -Wextra
+CXXFLAGS=-std=c++11 -Wall -Wextra -Wdeprecated-declarations -Wsign-compare
 SRC=Test.cpp
 EXE=Test
 
