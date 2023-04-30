@@ -31,7 +31,7 @@ class game{
                 addSmallEnemy(x+j,y);
                 j = j + 0.1f;
             }
-            //addBoss(-0.03f,0.5f);
+            addBoss(-0.03f,0.5f);
         }
         std::vector<Enemy*>& getList(){
             return enemyList;

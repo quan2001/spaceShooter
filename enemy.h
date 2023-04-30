@@ -123,16 +123,23 @@ private:
 class mediumEnemy : public Enemy {
 private:
     void wkey(){
-        pointY = pointY + 0.0001f;
+        if(pointY < 1.0f){
+            pointY = pointY + 0.001f;
+        }
     }
     void skey(){
-        pointY = pointY - 0.0001f;
+         if(pointY > -1.0f){
+        pointY = pointY - 0.001f;
+        }
     }
     void akey(){
-        pointX = pointX - 0.0001f;
+        if(pointX > -1.0f )
+        pointX = pointX - 0.001f;
      }
     void dkey(){
-        pointX = pointX + 0.0001f;
+        if(pointX < 1.0f){
+            pointX = pointX + 0.001f;
+        }
     }
 public:
     mediumEnemy(float x, float y,float width, float height){
