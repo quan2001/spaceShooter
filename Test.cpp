@@ -148,26 +148,54 @@ void updatePlayer() {
 }
 void render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    int len;
+    if(space.timeRemaining <=0){
+        glColor3f(1.0, 0.0, 0.0); // Set color to red
+        glRasterPos2f(-0.01f,0.01f);
+        char gameOverStr[] = "Game Over";
+        int len = strlen(gameOverStr);
+        for (int i = 0; i < len; i++) {
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, gameOverStr[i]);
+        }
+        glColor3f(1.0, 1.0, 1.0);
+        glRasterPos2f(0.5f, -0.8f);
+        char scoreStr[50];
+        sprintf(scoreStr, "Score: %d", space.score);
+        len = strlen(scoreStr);
+        for (int i = 0; i < len; i++) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, scoreStr[i]);
+        }
+        glutSwapBuffers();
+    }else{
     
-    space.previousTime = space.currentTime;
-    space.currentTime = glutGet(GLUT_ELAPSED_TIME);
-    
-    space.updateTime();
+        space.previousTime = space.currentTime;
+        space.currentTime = glutGet(GLUT_ELAPSED_TIME);
+        
+        space.updateTime();
 
-    //space.printTime();
-    updatePlayer();
-    shooter.drawTriangle();
+        //space.printTime();
+        updatePlayer();
+        shooter.drawTriangle();
 
-   int i;
-   //cout << space.enemyList.size() << endl;
-  
-   for(i=0;i<space.enemyList.size();i++){
-    space.enemyList[i]->draw();
-    //cout << i << endl
+        int i;
+        //cout << space.enemyList.size() << endl;
     
-   }
-  // cout << space.timeRemaining << endl;
-   glutSwapBuffers();
+        for(i=0;i<space.enemyList.size();i++){
+            space.enemyList[i]->draw();
+            //cout << i << endl
+            
+        }
+        glColor3f(1.0, 1.0, 1.0);
+        glRasterPos2f(0.5f, -0.8f);
+        char scoreStr[50];
+        sprintf(scoreStr, "Score: %d", space.score);
+        len = strlen(scoreStr);
+        for (int i = 0; i < len; i++) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, scoreStr[i]);
+        }
+    // cout << space.timeRemaining << endl;
+    glutSwapBuffers();
+    }
    
 }
 void idle() {
@@ -177,10 +205,12 @@ void idle() {
         space.checkIfDead(space.getList()[i]);
     }
     space.move();
+    /*
     if(space.timeRemaining <=0){
-        cout << space.score << endl;
+        //cout << space.score << endl;
         exit(0);
     }
+    */
     glutPostRedisplay(); // Mark the window for redisplay
 }
 
