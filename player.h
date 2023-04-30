@@ -40,7 +40,7 @@ class player{
             float horizontal = 20.0f;
             int i;
             for(i=0;i<list.size();i++){
-                if((list[i]->getHitBox()).intersectBox(width)){
+                if((list[i]->getHitBox()).intersectBox(width,pointY)){
                     list[i]->reduceHp();
                     return;
                 }

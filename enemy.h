@@ -18,6 +18,7 @@ public:
     virtual ~Enemy() {}
     virtual void draw() = 0;
     virtual void update() = 0;
+    virtual int incScore() = 0;
     Hitbox getHitBox(){
         return box;
     }
@@ -62,7 +63,9 @@ public:
     ~smallEnemy(){
         std::cout << "small enemy destory" << std::endl;
     }
-    
+    int incScore(){
+        return 1;
+    }
     void draw(){
         glColor3f(1.0f, 0.0f, 0.0f); // red
 
@@ -153,6 +156,9 @@ public:
     ~mediumEnemy(){
         std::cout << "destroy midEnemy" << std::endl;
     }
+    int incScore(){
+        return 3;
+    }
     void draw(){
         glColor3f(0.0f, 0.0f, 1.0f); // blue
 
@@ -222,6 +228,9 @@ public:
        
         std::cout << "destroy midEnemy" << std::endl;
     
+    }
+    int incScore(){
+        return 10;
     }
     void draw(){
         glColor3f(0.5f, 0.5f, 0.5f); // 

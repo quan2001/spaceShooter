@@ -19,10 +19,10 @@ public:
     ~Hitbox(){
 
     }
-    bool intersectBox(float pointX) {
+    bool intersectBox(float pointX,float pointY) {
         //std::cout << "pointX: " << pointX << std::endl;
         //std::cout << "x: " << x <<  std::endl;
-         if(pointX >= x && pointX <= x+width){
+         if(pointX >= x && pointX <= x+width && pointY <= y){
             std::cout << "hit: "  ;
             return true;
         }

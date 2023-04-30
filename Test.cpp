@@ -6,6 +6,7 @@
 #include "player.h"
 #include <vector>
 #include "game.h"
+#include <cstdlib> 
 using namespace std;
 
 // Define the keyboard callback function
@@ -14,6 +15,33 @@ game space;
 
 
 player shooter(0.01f,0.01f,0.04f);
+void countdown(int value) {
+    if (space.timeRemaining> 0) {
+        space.timeRemaining--;
+        glutPostRedisplay();
+        glutTimerFunc(1000, countdown, 0); // register the callback function again
+    }
+    int random_numberSmall = (rand() % 8)+1; //make random number 1-8
+    int random_numberSmallY = (rand() % 8)+1;
+    int random_numberMid = (rand() % 8)+1; //make random number 1-8
+   //cout << "boss " << space.timeBoss <<endl;
+    if(space.timeBoss>=20000){
+        space.addBoss(-0.03f,0.5f);
+        space.timeBoss -= 20000;
+    }
+    //cout << "midEnemy: " << space.timeMid <<endl;
+    if(space.timeMid>=5000){
+        space.addMidEnemy(-0.9f+(0.2*random_numberSmall),0.4f);
+        space.timeMid -= 5000;
+
+    }
+    //cout << "smallEnemy: " << space.timeSmall <<endl;
+    if(space.timeSmall>=2000){
+        space.addSmallEnemy(-0.9f+(0.1*random_numberSmall),-0.9f+(0.1*random_numberSmall));
+        space.timeSmall -= 2000;
+    }
+}
+
 void keyboardCallback(unsigned char key, int x, int y) {
     // Handle the keyboard input
 
@@ -34,22 +62,22 @@ void keyboardCallback(unsigned char key, int x, int y) {
         }
         if (key == 'w') {
             shooter.w_pressed = true;
-            shooter.print();
+            //shooter.print();
            // glutPostRedisplay();
         }
         if (key == 'a'){
             shooter.a_pressed = true;
-            shooter.print();
+            //shooter.print();
           //  glutPostRedisplay();
         }
         if (key == 's'){
             shooter.s_pressed = true;
-            shooter.print();
+            //shooter.print();
            // glutPostRedisplay();
         }
         if ( key == 'd'){
             shooter.d_pressed = true;
-            shooter.print();
+            //shooter.print();
             //glutPostRedisplay();
         }
         
@@ -120,17 +148,25 @@ void updatePlayer() {
 }
 void render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    space.previousTime = space.currentTime;
+    space.currentTime = glutGet(GLUT_ELAPSED_TIME);
+    
+    space.updateTime();
+
+    //space.printTime();
     updatePlayer();
     shooter.drawTriangle();
 
    int i;
    //cout << space.enemyList.size() << endl;
+  
    for(i=0;i<space.enemyList.size();i++){
     space.enemyList[i]->draw();
     //cout << i << endl
     
    }
-   
+  // cout << space.timeRemaining << endl;
    glutSwapBuffers();
    
 }
@@ -141,7 +177,8 @@ void idle() {
         space.checkIfDead(space.getList()[i]);
     }
     space.move();
-    if(space.gameEnd()){
+    if(space.timeRemaining <=0){
+        cout << space.score << endl;
         exit(0);
     }
     glutPostRedisplay(); // Mark the window for redisplay
@@ -162,6 +199,7 @@ int main(int argc, char** argv) {
     // Set the keyboard callback function
     glutKeyboardFunc(keyboardCallback);
     glutKeyboardUpFunc(keyboardUpCallback);
+    glutTimerFunc(1000, countdown, 0);
     
     
 
