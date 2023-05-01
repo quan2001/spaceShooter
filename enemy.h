@@ -14,10 +14,11 @@ public:
     float pointY;
     float width;
     float height;
+    float speed;
     int hp;
+    int direction=0;
     virtual ~Enemy() {}
     virtual void draw() = 0;
-    virtual void update() = 0;
     virtual int incScore() = 0;
     void reduceHp(){
         hp = hp -1;
@@ -33,55 +34,28 @@ public:
     int getHp(){
         return hp;
     }
-};
 
-class smallEnemy : public Enemy {
-private:
-    void wkey(){
-        if(pointY < 1.0f){
-            pointY = pointY + 0.0055f;
+        void wkey(){
+        if(pointY < .8f){
+            pointY = pointY + speed;
         }
     }
     void skey(){
          if(pointY > -1.0f){
-        pointY = pointY - 0.0055f;
+        pointY = pointY - speed;
         }
     }
     void akey(){
-        if(pointX > -1.0f )
-        pointX = pointX - 0.0055f;
-     }
-    void dkey(){
-        if(pointX < 1.0f){
-            pointX = pointX + 0.0055f;
-        }
-    }
-public:
-    smallEnemy(float x, float y,float width, float height){
-            this->pointX = x;
-            this->pointY = y;
-            this->width = width;
-            this->height = height;
-            hp = 1;
-    }
-    ~smallEnemy(){
-        std::cout << "small enemy destory" << std::endl;
-    }
-    int incScore(){
-        return 1;
-    }
-    void draw(){
-        glColor3f(1.0f, 0.0f, 0.0f); // red
-
-        // Draw the square
-        glBegin(GL_QUADS);
-            glVertex2f(pointX, pointY);           // bottom-left
-            glVertex2f(pointX + width, pointY);  // bottom-right
-            glVertex2f(pointX+ width, pointY + height);  // top-right
-            glVertex2f(pointX, pointY + height);  // top-left
-        glEnd();
+        if(pointX > -0.9f )
+        pointX = pointX - speed;
     }
     
+    void dkey(){
+        if(pointX < .9f){
+            pointX = pointX + speed;
+        }
+    }
+
     void move(int direction){
         if(direction == 1){
             wkey();
@@ -118,42 +92,60 @@ public:
         }
         
     }
+
     void update(){
-        int random_number = (rand() % 8)+1; //make random number 1-8
-        move(random_number);
+        if (rand() % 20==0)
+            direction = (rand() % 8)+1; //make random number 1-8
+        
+        move(direction);
     }
+};
+
+class smallEnemy : public Enemy {
+
+public:
+    smallEnemy(float x, float y,float width, float height){
+            this->pointX = x;
+            this->pointY = y;
+            this->width = width;
+            this->height = height;
+            this->speed=  0.0055f;
+            hp = 1;
+    }
+    ~smallEnemy(){
+        std::cout << "small enemy destory" << std::endl;
+    }
+    int incScore(){
+        return 1;
+    }
+    void draw(){
+        glColor3f(1.0f, 0.0f, 0.0f); // red
+
+        // Draw the square
+        glBegin(GL_QUADS);
+            glVertex2f(pointX, pointY);           // bottom-left
+            glVertex2f(pointX + width, pointY);  // bottom-right
+            glVertex2f(pointX+ width, pointY + height);  // top-right
+            glVertex2f(pointX, pointY + height);  // top-left
+        glEnd();
+    }
+    
+    
+    
     //HitBox getHitBox() const;
 private:
     
 };
 
 class mediumEnemy : public Enemy {
-private:
-    void wkey(){
-        if(pointY < 1.0f){
-            pointY = pointY + 0.001f;
-        }
-    }
-    void skey(){
-         if(pointY > -1.0f){
-        pointY = pointY - 0.001f;
-        }
-    }
-    void akey(){
-        if(pointX > -1.0f )
-        pointX = pointX - 0.001f;
-     }
-    void dkey(){
-        if(pointX < 1.0f){
-            pointX = pointX + 0.001f;
-        }
-    }
+
 public:
     mediumEnemy(float x, float y,float width, float height){
             this->pointX = x;
             this->pointY = y;
             this->width = width;
             this->height = height;
+            this -> speed = 0.005f;
             hp = 3;
     }
     ~mediumEnemy(){
@@ -180,47 +172,7 @@ public:
         glVertex3f(pointX+.03f*hp/3, pointY, 0.0f);
         glEnd();
     }
-    void move(int direction){
-        if(direction == 1){
-            wkey();
-        }
-        if(direction == 2){
-            wkey();
-            dkey();
-            
-        }
-        if(direction == 3){
-            dkey();
-            
-        }
-        if(direction == 4){
-            dkey();
-            skey();
-        }
-        if(direction == 5){
-            skey();
-            
-        }
-        if(direction == 6){
-            skey();
-            akey();
-            
-        }
-        if(direction == 7){
-            akey();
-            
-        }
-        if(direction == 8){
-            akey();
-            wkey();
-        }
-
-    }
-    void update(){
-        int random_number = (rand() % 8)+1; //make random number 1-8
-        move(random_number);
-    }
-
+    
 };
 
 class boss : public Enemy {
@@ -231,6 +183,7 @@ public:
             this->width = width;
             this->height = height;
             hp = 10;
+            this -> speed = 0.004f;
     }
    
     ~boss(){
@@ -296,9 +249,7 @@ public:
         glEnd();
     }
     
-    void update(){
-
-    }
+    
 
 };
 

@@ -18,7 +18,7 @@ class player{
         float pointX;
         float pointY;
         float length;
-        const float speed = 0.0015f;
+        const float speed = 0.0015f*3.0f;
          
         player(float pointX,float pointY, float length){
             this->pointX = pointX;
